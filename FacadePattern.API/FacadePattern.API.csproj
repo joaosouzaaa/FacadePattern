@@ -24,10 +24,8 @@
 	<ItemGroup>
 		<Folder Include="Controllers\" />
 		<Folder Include="Interfaces\Services\" />
-		<Folder Include="Interfaces\Repositories\" />
 		<Folder Include="DataTransferObjects\" />
 		<Folder Include="Services\" />
-		<Folder Include="Data\Repositories\" />
 	</ItemGroup>
 
 </Project>

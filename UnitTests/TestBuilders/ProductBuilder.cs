@@ -21,12 +21,9 @@ public sealed class ProductBuilder
         };
 
     public ProductSave SaveBuild() =>
-        new()
-        {
-            Name = _name,
-            Price = _price,
-            QuantityAvailable = _quantityAvailable
-        };
+        new(_name,
+            _price,
+            _quantityAvailable);
 
     public ProductResponse ResponseBuild() =>
         new()

@@ -77,6 +77,11 @@ public sealed class ProductServiceTests
 
         yield return new object[]
         {
+            ProductBuilder.NewObject().WithName(new string('a', 101)).SaveBuild()
+        };
+
+        yield return new object[]
+        {
             ProductBuilder.NewObject().WithPrice(-1).SaveBuild()
         };
 

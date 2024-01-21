@@ -1,6 +1,8 @@
 ﻿using FacadePattern.API.DataTransferObjects.Order;
 using FacadePattern.API.DataTransferObjects.Product;
 using FacadePattern.API.Entities;
+using FacadePattern.API.Enums;
+using FacadePattern.API.Extensions;
 using FacadePattern.API.Interfaces.Mappers;
 using FacadePattern.API.Interfaces.Repositories;
 using FacadePattern.API.Interfaces.Services;
@@ -19,7 +21,7 @@ public sealed class ProductService(IProductRepository productRepository, IProduc
     {
         if (!IsValid(productSave))
         {
-            _notificationHandler.AddNotification("Invalid product", "The product is invalid");
+            _notificationHandler.AddNotification(nameof(EMessage.Invalid), EMessage.Invalid.Description().FormatTo("Product"));
 
             return false;
         }
@@ -33,7 +35,7 @@ public sealed class ProductService(IProductRepository productRepository, IProduc
     {
         if (!await _productRepository.ExistsAsync(id))
         {
-            _notificationHandler.AddNotification("Not found", "Product was not found.");
+            _notificationHandler.AddNotification(nameof(EMessage.NotFound), EMessage.NotFound.Description().FormatTo("Product"));
 
             return false;
         }
@@ -51,6 +53,7 @@ public sealed class ProductService(IProductRepository productRepository, IProduc
     private static bool IsValid(ProductSave productSave) =>
         !string.IsNullOrEmpty(productSave.Name)
         && productSave.Name.Length > 2
+        && productSave.Name.Length < 100
         && productSave.Price > 0
         && productSave.QuantityAvailable > 0;
 }

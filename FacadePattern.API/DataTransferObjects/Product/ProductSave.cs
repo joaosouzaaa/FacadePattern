@@ -1,8 +1,5 @@
 ﻿namespace FacadePattern.API.DataTransferObjects.Product;
 
-public sealed class ProductSave
-{
-    public required string Name { get; set; }
-    public required decimal Price { get; set; }
-    public required int QuantityAvailable { get; set; }
-}
+public sealed record ProductSave(string Name, 
+                                 decimal Price,
+                                 int QuantityAvailable);

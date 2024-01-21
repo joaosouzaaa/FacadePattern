@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FacadePattern.API.Migrations
 {
     [DbContext(typeof(FacadePatternDbContext))]
-    [Migration("20240121035612_ProductInventory")]
-    partial class ProductInventory
+    [Migration("20240121052913_CouponDiscount")]
+    partial class CouponDiscount
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,7 +35,7 @@ namespace FacadePattern.API.Migrations
 
                     b.Property<decimal>("DiscountPorcentage")
                         .HasColumnType("decimal(5, 2)")
-                        .HasColumnName("descount_porcentage");
+                        .HasColumnName("discount_porcentage");
 
                     b.Property<string>("Name")
                         .IsRequired()

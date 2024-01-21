@@ -33,7 +33,7 @@ namespace FacadePattern.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("DescountPorcentage")
+                    b.Property<decimal>("DiscountPorcentage")
                         .HasColumnType("decimal(5, 2)")
                         .HasColumnName("descount_porcentage");
 

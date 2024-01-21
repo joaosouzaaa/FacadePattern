@@ -3,6 +3,7 @@ using FacadePattern.API.Data.Repositories.BaseRepositories;
 using FacadePattern.API.Entities;
 using FacadePattern.API.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace FacadePattern.API.Data.Repositories;
 
@@ -14,6 +15,10 @@ public sealed class CouponRepository(FacadePatternDbContext dbContext) : BaseRep
 
         return await SaveChangesAsync();
     }
+
+    public Task<Coupon?> GetByIdAsync(int id) =>
+        DbContextSet.AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.Id == id);
     
     public Task<bool> UpdateAsync(Coupon coupon)
     {
@@ -22,8 +27,8 @@ public sealed class CouponRepository(FacadePatternDbContext dbContext) : BaseRep
         return SaveChangesAsync();
     }
 
-    public Task<bool> ExistsAsync(int id) =>
-        DbContextSet.AnyAsync(c => c.Id == id);
+    public Task<bool> ExistsAsync(Expression<Func<Coupon, bool>> predicate) =>
+        DbContextSet.AnyAsync(predicate);
 
     public async Task<bool> DeleteAsync(int id)
     {

@@ -17,9 +17,9 @@ public sealed class CouponMapping : IEntityTypeConfiguration<Coupon>
             .HasColumnName("name")
             .HasColumnType("varchar(100)");
 
-        builder.Property(c => c.DescountPorcentage)
+        builder.Property(c => c.DiscountPorcentage)
             .IsRequired(true)
-            .HasColumnName("descount_porcentage")
+            .HasColumnName("discount_porcentage")
             .HasColumnType("decimal(5, 2)");
     }
 }

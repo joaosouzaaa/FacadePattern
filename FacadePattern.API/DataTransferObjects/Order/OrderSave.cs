@@ -2,8 +2,5 @@
 
 namespace FacadePattern.API.DataTransferObjects.Order;
 
-public sealed class OrderSave
-{
-    public string? CouponName { get; set; }
-    public List<ProductOrderSave> ProductsOrder{ get; set; }
-}
+public sealed record OrderSave(string? CouponName,
+                               List<ProductOrderSave> ProductsOrder);

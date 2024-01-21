@@ -17,7 +17,7 @@ public sealed class OrderMapping : IEntityTypeConfiguration<Order>
             .HasColumnName("creation_date")
             .HasColumnType("datetime2");
 
-        builder.HasMany(o => o.ProductOrders)
+        builder.HasMany(o => o.ProductsOrder)
             .WithOne(p => p.Order)
             .HasForeignKey(p => p.OrderId)
             .HasConstraintName("FK_Order_ProductOrder")

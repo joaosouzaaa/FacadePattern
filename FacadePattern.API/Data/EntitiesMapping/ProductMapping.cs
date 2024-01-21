@@ -21,11 +21,5 @@ public sealed class ProductMapping : IEntityTypeConfiguration<Product>
             .IsRequired(true)
             .HasColumnName("price")
             .HasColumnType("decimal(18, 2)");
-
-        builder.HasOne(p => p.Inventory)
-            .WithOne()
-            .HasForeignKey<Product>(p => p.InventoryId)
-            .HasConstraintName("FK_Product_Inventory")
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

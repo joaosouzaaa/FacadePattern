@@ -8,6 +8,7 @@ public static class RepositoriesDependencyInjection
     public static void AddRepositoriesDependencyInjection(this IServiceCollection services)
     {
         services.AddScoped<ICouponRepository, CouponRepository>();
+        services.AddScoped<IInventoryRepository, InventoryRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
     }

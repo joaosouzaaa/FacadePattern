@@ -16,5 +16,12 @@ public sealed class InventoryMapping : IEntityTypeConfiguration<Inventory>
             .IsRequired(true)
             .HasColumnName("quantity")
             .HasColumnType("int");
+
+        builder.HasOne(i => i.Product)
+            .WithOne(p => p.Inventory)
+            .HasForeignKey<Inventory>(i => i.ProductId)
+            .HasConstraintName("FK_Inventory_Product")
+            .OnDelete(DeleteBehavior.Cascade);
+
     }
 }

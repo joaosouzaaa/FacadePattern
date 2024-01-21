@@ -1,5 +1,6 @@
 using FacadePattern.API.Constants.CorsConstants;
 using FacadePattern.API.DependencyInjection;
+using FacadePattern.API.Settings.MigrationSettings;
 
 var builder = WebApplication.CreateBuilder(args);
 IConfiguration configuration = builder.Configuration;
@@ -21,5 +22,6 @@ app.UseHttpsRedirection();
 app.UseCors(CorsPoliciesNamesConstants.CorsPolicy);
 app.UseAuthorization();
 app.MapControllers();
+app.MigrateDatabase();
 
 app.Run();

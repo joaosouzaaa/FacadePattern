@@ -17,7 +17,7 @@ public sealed class OrderRepository(FacadePatternDbContext dbContext) : BaseRepo
 
     public Task<List<Order>> GetAllAsync() =>
         DbContextSet.AsNoTracking()
-                    .Include(o => o.ProductOrders)
+                    .Include(o => o.ProductsOrder)
                     .ThenInclude(p => p.Product)
                     .ToListAsync();
 }

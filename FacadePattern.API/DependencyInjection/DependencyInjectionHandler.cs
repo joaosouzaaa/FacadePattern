@@ -19,6 +19,7 @@ public static class DependencyInjectionHandler
         services.AddSettingsDependencyInjection();
         services.AddFilterDependencyInjection();
         services.AddRepositoriesDependencyInjection();
+        services.AddMappersDependencyInjection();
         services.AddServicesDependencyInjection();
     }
 }

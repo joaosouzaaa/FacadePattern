@@ -28,6 +28,8 @@ public sealed class ProductRepository(FacadePatternDbContext dbContext) : BaseRe
     }
 
     public Task<List<Product>> GetAllAsync() =>
-        DbContextSet.AsNoTracking().ToListAsync();
+        DbContextSet.AsNoTracking()
+                    .Include(p => p.Inventory)
+                    .ToListAsync();
 
 }

@@ -11,4 +11,5 @@ public interface ICouponRepository
     Task<bool> ExistsAsync(Expression<Func<Coupon, bool>> predicate);
     Task<bool> DeleteAsync(int id);
     Task<List<Coupon>> GetAllAsync();
+    Task<double> GetDiscountPorcentageByNameAsync(string name);
 }

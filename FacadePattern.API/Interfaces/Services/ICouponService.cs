@@ -8,4 +8,6 @@ public interface ICouponService
     Task<bool> UpdateAsync(CouponUpdate couponUpdate);
     Task<bool> DeleteAsync(int id);
     Task<List<CouponResponse>> GetAllAsync();
+    Task<bool> IsCouponValid(string name);
+    Task<double> GetDiscountPorcentageByNameAsync(string name);
 }

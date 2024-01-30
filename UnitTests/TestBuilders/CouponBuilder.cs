@@ -4,6 +4,7 @@ using FacadePattern.API.Entities;
 namespace UnitTests.TestBuilders;
 public sealed class CouponBuilder
 {
+    private readonly int _id = 123;
     private double _discountPorcentage = 12.24f;
     private string _name = "name";
 
@@ -13,7 +14,7 @@ public sealed class CouponBuilder
     public Coupon DomainBuild() =>
         new()
         {
-            Id = 1,
+            Id = _id,
             DiscountPorcentage = _discountPorcentage,
             Name = _name
         };
@@ -23,7 +24,7 @@ public sealed class CouponBuilder
             _discountPorcentage);
 
     public CouponUpdate UpdateBuild() =>
-        new(1,
+        new(_id,
             _name,
             _discountPorcentage);
 
@@ -31,7 +32,7 @@ public sealed class CouponBuilder
         new()
         {
             DiscountPorcentage = _discountPorcentage,
-            Id = 123,
+            Id = _id,
             Name = _name
         };
 

@@ -32,4 +32,8 @@ public sealed class ProductRepository(FacadePatternDbContext dbContext) : BaseRe
                     .Include(p => p.Inventory)
                     .ToListAsync();
 
+    public Task<Product?> GetByIdAsync(int id) =>
+        DbContextSet.AsNoTracking()
+                    .Include(p => p.Inventory)
+                    .FirstOrDefaultAsync(p => p.Id == id);
 }

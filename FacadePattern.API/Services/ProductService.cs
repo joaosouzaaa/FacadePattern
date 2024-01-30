@@ -1,6 +1,5 @@
-﻿using FacadePattern.API.DataTransferObjects.Order;
-using FacadePattern.API.DataTransferObjects.Product;
-using FacadePattern.API.Entities;
+﻿using FacadePattern.API.DataTransferObjects.Product;
+using FacadePattern.API.DataTransferObjects.ProductOrder;
 using FacadePattern.API.Enums;
 using FacadePattern.API.Extensions;
 using FacadePattern.API.Interfaces.Mappers;
@@ -48,6 +47,30 @@ public sealed class ProductService(IProductRepository productRepository, IProduc
         var productList = await _productRepository.GetAllAsync();
 
         return _productMapper.DomainListToResponseList(productList);
+    }
+
+    public async Task<bool> IsProductListValidAsync(List<ProductOrderSave> productOrderSaveList)
+    {
+        foreach(var productOrderSave in productOrderSaveList)
+        {
+            var product = await _productRepository.GetByIdAsync(productOrderSave.ProductId);
+
+            if (product is null)
+            {
+                _notificationHandler.AddNotification(nameof(EMessage.NotFound), EMessage.NotFound.Description().FormatTo("Product"));
+
+                return false;
+            }
+
+            if(productOrderSave.Quantity > product.Inventory.Quantity)
+            {
+                _notificationHandler.AddNotification(nameof(EMessage.Invalid), EMessage.Invalid.Description().FormatTo("Product"));
+
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static bool IsValid(ProductSave productSave) =>

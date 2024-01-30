@@ -86,9 +86,25 @@ public sealed class CouponService(ICouponRepository couponRepository, ICouponMap
         return _couponMapper.DomainListToResponseList(couponList);
     }
 
+    public async Task<bool> IsCouponValid(string name)
+    {
+        if(!await _couponRepository.ExistsAsync(c => c.Name == name))
+        {
+            _notificationHandler.AddNotification(nameof(EMessage.Invalid), EMessage.Invalid.Description().FormatTo("Coupon"));
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public Task<double> GetDiscountPorcentageByNameAsync(string name) =>
+        _couponRepository.GetDiscountPorcentageByNameAsync(name);
+
     private static bool IsValid(Coupon coupon) =>
         !string.IsNullOrEmpty(coupon.Name)
         && coupon.Name.Length > 1
         && coupon.Name.Length < 100
-        && coupon.DiscountPorcentage > 0;
+        && coupon.DiscountPorcentage > 0
+        && coupon.DiscountPorcentage < 100;
 }

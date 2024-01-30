@@ -108,6 +108,11 @@ public sealed class CouponServiceTests
         {
             CouponBuilder.NewObject().WithDiscountPorcentage(-2).DomainBuild()
         };
+
+        yield return new object[]
+       {
+            CouponBuilder.NewObject().WithDiscountPorcentage(101).DomainBuild()
+       };
     }
 
     [Fact]

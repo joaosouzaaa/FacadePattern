@@ -41,4 +41,10 @@ public sealed class CouponRepository(FacadePatternDbContext dbContext) : BaseRep
 
     public Task<List<Coupon>> GetAllAsync() =>
         DbContextSet.AsNoTracking().ToListAsync();
+
+    public Task<double> GetDiscountPorcentageByNameAsync(string name) =>
+        DbContextSet.AsNoTracking()
+                    .Where(c => c.Name == name)
+                    .Select(c => c.DiscountPorcentage)
+                    .FirstOrDefaultAsync();
 }

@@ -12,6 +12,11 @@ public sealed class OrderMapping : IEntityTypeConfiguration<Order>
 
         builder.HasKey(o => o.Id);
 
+        builder.Property(o => o.TotalValue)
+            .IsRequired(true)
+            .HasColumnName("total_value")
+            .HasColumnType("decimal(18, 2)");
+
         builder.Property(o => o.CreationDate)
             .IsRequired(true)
             .HasColumnName("creation_date")

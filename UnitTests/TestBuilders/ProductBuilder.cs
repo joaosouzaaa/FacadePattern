@@ -4,6 +4,7 @@ using FacadePattern.API.Entities;
 namespace UnitTests.TestBuilders;
 public sealed class ProductBuilder
 {
+    private readonly int _id = 1;
     private string _name = "test";
     private decimal _price = 22.98m;
     private int _quantityAvailable = 1;
@@ -14,7 +15,7 @@ public sealed class ProductBuilder
     public Product DomainBuild() =>
         new()
         {
-            Id = 1,
+            Id = _id,
             Inventory = InventoryBuilder.NewObject().DomainBuild(),
             Name = _name,
             Price = _price
@@ -28,7 +29,7 @@ public sealed class ProductBuilder
     public ProductResponse ResponseBuild() =>
         new()
         {
-            Id = 8,
+            Id = _id,
             Inventory = InventoryBuilder.NewObject().ResponseBuild(),
             Name = _name,
             Price = _price

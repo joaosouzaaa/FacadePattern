@@ -5,7 +5,7 @@ namespace UnitTests.TestBuilders;
 public sealed class CouponBuilder
 {
     private readonly int _id = 123;
-    private double _discountPorcentage = 12.24f;
+    private decimal _discountPorcentage = 12.24m;
     private string _name = "name";
 
     public static CouponBuilder NewObject() =>
@@ -43,7 +43,7 @@ public sealed class CouponBuilder
         return this;
     }
 
-    public CouponBuilder WithDiscountPorcentage(double discountPorcentage)
+    public CouponBuilder WithDiscountPorcentage(decimal discountPorcentage)
     {
         _discountPorcentage = discountPorcentage;
 

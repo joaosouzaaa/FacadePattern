@@ -2,4 +2,4 @@
 
 public sealed record CouponUpdate(int Id,
                                   string Name,
-                                  double DiscountPorcentage);
+                                  decimal DiscountPorcentage);

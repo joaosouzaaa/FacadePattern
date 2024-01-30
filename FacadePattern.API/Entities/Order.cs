@@ -6,5 +6,5 @@ public sealed class Order
     public decimal TotalValue { get; set; }
     public required DateTime CreationDate { get; set; }
 
-    public List<ProductOrder> ProductsOrder{ get; set; }
+    public required List<ProductOrder> ProductsOrder{ get; set; }
 }

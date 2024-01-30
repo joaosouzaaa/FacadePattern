@@ -9,6 +9,8 @@ public static class MappersDependencyInjection
     {
         services.AddScoped<ICouponMapper, CouponMapper>();
         services.AddScoped<IInventoryMapper, InventoryMapper>();
+        services.AddScoped<IOrderMapper, OrderMapper>();
         services.AddScoped<IProductMapper, ProductMapper>();
+        services.AddScoped<IProductOrderMapper, ProductOrderMapper>();
     }
 }

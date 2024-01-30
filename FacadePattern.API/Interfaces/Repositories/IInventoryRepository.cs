@@ -4,5 +4,6 @@ namespace FacadePattern.API.Interfaces.Repositories;
 
 public interface IInventoryRepository
 {
-    Task<bool> UpdateQuantityAsync(Inventory inventory);
+    Task<int> GetQuantityByProductIdAsync(int productId);
+    Task UpdateQuantityByProductIdAsync(int productId, int quantity);
 }

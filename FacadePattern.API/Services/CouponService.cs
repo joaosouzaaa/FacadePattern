@@ -12,85 +12,81 @@ namespace FacadePattern.API.Services;
 public sealed class CouponService(ICouponRepository couponRepository, ICouponMapper couponMapper,
                                   INotificationHandler notificationHandler) : ICouponService
 {
-    private readonly ICouponRepository _couponRepository = couponRepository;
-    private readonly ICouponMapper _couponMapper = couponMapper;
-    private readonly INotificationHandler _notificationHandler = notificationHandler;
-
     public async Task<bool> AddAsync(CouponSave couponSave)
     {
-        if (await _couponRepository.ExistsAsync(c => c.Name == couponSave.Name))
+        if (await couponRepository.ExistsAsync(c => c.Name == couponSave.Name))
         {
-            _notificationHandler.AddNotification(nameof(EMessage.Exists), EMessage.Exists.Description().FormatTo("Name"));
+            notificationHandler.AddNotification(nameof(EMessage.Exists), EMessage.Exists.Description().FormatTo("Name"));
 
             return false;
         }
 
-        var coupon = _couponMapper.SaveToDomain(couponSave);
+        var coupon = couponMapper.SaveToDomain(couponSave);
 
         if (!IsValid(coupon))
         {
-            _notificationHandler.AddNotification(nameof(EMessage.Invalid), EMessage.Invalid.Description().FormatTo("Coupon"));
+            notificationHandler.AddNotification(nameof(EMessage.Invalid), EMessage.Invalid.Description().FormatTo("Coupon"));
 
             return false;
         }
 
-        return await _couponRepository.AddAsync(coupon);
+        return await couponRepository.AddAsync(coupon);
     }
 
     public async Task<bool> UpdateAsync(CouponUpdate couponUpdate)
     {
-        var coupon = await _couponRepository.GetByIdAsync(couponUpdate.Id);
+        var coupon = await couponRepository.GetByPredicateAsync(c => c.Id == couponUpdate.Id);
 
         if (coupon is null)
         {
-            _notificationHandler.AddNotification(nameof(EMessage.NotFound), EMessage.NotFound.Description().FormatTo("Product"));
+            notificationHandler.AddNotification(nameof(EMessage.NotFound), EMessage.NotFound.Description().FormatTo("Product"));
 
             return false;
         }
 
-        if (!coupon.Name.Equals(couponUpdate.Name) && await _couponRepository.ExistsAsync(c => c.Name == couponUpdate.Name))
+        if (!coupon.Name.Equals(couponUpdate.Name) && await couponRepository.ExistsAsync(c => c.Name == couponUpdate.Name))
         {
-            _notificationHandler.AddNotification(nameof(EMessage.Exists), EMessage.Exists.Description().FormatTo("Name"));
+            notificationHandler.AddNotification(nameof(EMessage.Exists), EMessage.Exists.Description().FormatTo("Name"));
 
             return false;
         }
 
-        _couponMapper.UpdateToDomain(couponUpdate, coupon);
+        couponMapper.UpdateToDomain(couponUpdate, coupon);
 
         if (!IsValid(coupon))
         {
-            _notificationHandler.AddNotification(nameof(EMessage.Invalid), EMessage.Invalid.Description().FormatTo("Coupon"));
+            notificationHandler.AddNotification(nameof(EMessage.Invalid), EMessage.Invalid.Description().FormatTo("Coupon"));
 
             return false;
         }
 
-        return await _couponRepository.UpdateAsync(coupon);
+        return await couponRepository.UpdateAsync(coupon);
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        if (!await _couponRepository.ExistsAsync(c => c.Id == id))
+        if (!await couponRepository.ExistsAsync(c => c.Id == id))
         {
-            _notificationHandler.AddNotification(nameof(EMessage.NotFound), EMessage.NotFound.Description().FormatTo("Product"));
+            notificationHandler.AddNotification(nameof(EMessage.NotFound), EMessage.NotFound.Description().FormatTo("Product"));
 
             return false;
         }
 
-        return await _couponRepository.DeleteAsync(id);
+        return await couponRepository.DeleteAsync(id);
     }
 
     public async Task<List<CouponResponse>> GetAllAsync()
     {
-        var couponList = await _couponRepository.GetAllAsync();
+        var couponList = await couponRepository.GetAllAsync();
 
-        return _couponMapper.DomainListToResponseList(couponList);
+        return couponMapper.DomainListToResponseList(couponList);
     }
 
     public async Task<bool> IsCouponValid(string name)
     {
-        if(!await _couponRepository.ExistsAsync(c => c.Name == name))
+        if(!await couponRepository.ExistsAsync(c => c.Name == name))
         {
-            _notificationHandler.AddNotification(nameof(EMessage.Invalid), EMessage.Invalid.Description().FormatTo("Coupon"));
+            notificationHandler.AddNotification(nameof(EMessage.Invalid), EMessage.Invalid.Description().FormatTo("Coupon"));
 
             return false;
         }
@@ -98,8 +94,33 @@ public sealed class CouponService(ICouponRepository couponRepository, ICouponMap
         return true;
     }
 
-    public Task<double> GetDiscountPorcentageByNameAsync(string name) =>
-        _couponRepository.GetDiscountPorcentageByNameAsync(name);
+    public async Task <bool> ProcessDiscountAsync(Order order, string name)
+    {
+        var coupon = await couponRepository.GetByPredicateAsync(c => c.Name == name);
+
+        if (coupon is null)
+        {
+            notificationHandler.AddNotification(nameof(EMessage.Invalid), EMessage.Invalid.Description().FormatTo("Coupon"));
+
+            return false;
+        }
+
+        decimal totalDiscount = 0;
+
+        foreach (var productOrder in order.ProductsOrder)
+        {
+            decimal discountPercentage = coupon.DiscountPorcentage / 100;
+            decimal discountAmount = productOrder.TotalValue * discountPercentage;
+
+            productOrder.TotalValue -= discountAmount;
+
+            totalDiscount += discountAmount;
+        }
+
+        order.TotalValue -= totalDiscount;
+
+        return true;
+    }
 
     private static bool IsValid(Coupon coupon) =>
         !string.IsNullOrEmpty(coupon.Name)

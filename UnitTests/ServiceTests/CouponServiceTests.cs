@@ -123,7 +123,7 @@ public sealed class CouponServiceTests
         var couponUpdate = CouponBuilder.NewObject().WithName(name).UpdateBuild();
 
         var coupon = CouponBuilder.NewObject().WithName(name).DomainBuild();
-        _couponRepositoryMock.Setup(c => c.GetByIdAsync(It.IsAny<int>()))
+        _couponRepositoryMock.Setup(c => c.GetByPredicateAsync(TestBuildUtil.BuildExpressionFunc<Coupon>()))
             .ReturnsAsync(coupon);
 
         _couponMapperMock.Setup(c => c.UpdateToDomain(It.IsAny<CouponUpdate>(), It.IsAny<Coupon>()));
@@ -148,7 +148,7 @@ public sealed class CouponServiceTests
         var couponUpdate = CouponBuilder.NewObject().WithName("teste").UpdateBuild();
 
         var coupon = CouponBuilder.NewObject().WithName("different").DomainBuild();
-        _couponRepositoryMock.Setup(c => c.GetByIdAsync(It.IsAny<int>()))
+        _couponRepositoryMock.Setup(c => c.GetByPredicateAsync(TestBuildUtil.BuildExpressionFunc<Coupon>()))
             .ReturnsAsync(coupon);
 
         _couponRepositoryMock.Setup(c => c.ExistsAsync(TestBuildUtil.BuildExpressionFunc<Coupon>()))
@@ -175,7 +175,7 @@ public sealed class CouponServiceTests
         // A
         var couponUpdate = CouponBuilder.NewObject().UpdateBuild();
 
-        _couponRepositoryMock.Setup(c => c.GetByIdAsync(It.IsAny<int>()))
+        _couponRepositoryMock.Setup(c => c.GetByPredicateAsync(TestBuildUtil.BuildExpressionFunc<Coupon>()))
             .Returns(Task.FromResult<Coupon?>(null));
 
         // A
@@ -197,7 +197,7 @@ public sealed class CouponServiceTests
         var couponUpdate = CouponBuilder.NewObject().WithName("teste").UpdateBuild();
 
         var coupon = CouponBuilder.NewObject().WithName("different").DomainBuild();
-        _couponRepositoryMock.Setup(c => c.GetByIdAsync(It.IsAny<int>()))
+        _couponRepositoryMock.Setup(c => c.GetByPredicateAsync(TestBuildUtil.BuildExpressionFunc<Coupon>()))
             .ReturnsAsync(coupon);
 
         _couponRepositoryMock.Setup(c => c.ExistsAsync(TestBuildUtil.BuildExpressionFunc<Coupon>()))
@@ -223,7 +223,7 @@ public sealed class CouponServiceTests
         const string name = "test";
         var couponUpdate = CouponBuilder.NewObject().WithName(name).UpdateBuild();
 
-        _couponRepositoryMock.Setup(c => c.GetByIdAsync(It.IsAny<int>()))
+        _couponRepositoryMock.Setup(c => c.GetByPredicateAsync(TestBuildUtil.BuildExpressionFunc<Coupon>()))
             .ReturnsAsync(coupon);
 
         _couponRepositoryMock.Setup(c => c.ExistsAsync(TestBuildUtil.BuildExpressionFunc<Coupon>()))

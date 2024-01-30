@@ -1,5 +1,5 @@
 ﻿using FacadePattern.API.DataTransferObjects.Product;
-using FacadePattern.API.DataTransferObjects.ProductOrder;
+using FacadePattern.API.Entities;
 using FacadePattern.API.Enums;
 using FacadePattern.API.Extensions;
 using FacadePattern.API.Interfaces.Mappers;
@@ -12,66 +12,41 @@ namespace FacadePattern.API.Services;
 public sealed class ProductService(IProductRepository productRepository, IProductMapper productMapper, 
                                    INotificationHandler notificationHandler) : IProductService
 {
-    private readonly IProductRepository _productRepository = productRepository;
-    private readonly IProductMapper _productMapper = productMapper;
-    private readonly INotificationHandler _notificationHandler = notificationHandler;
-
     public async Task<bool> AddAsync(ProductSave productSave)
     {
         if (!IsValid(productSave))
         {
-            _notificationHandler.AddNotification(nameof(EMessage.Invalid), EMessage.Invalid.Description().FormatTo("Product"));
+            notificationHandler.AddNotification(nameof(EMessage.Invalid), EMessage.Invalid.Description().FormatTo("Product"));
 
             return false;
         }
 
-        var product = _productMapper.SaveToDomain(productSave);
+        var product = productMapper.SaveToDomain(productSave);
 
-        return await _productRepository.AddAsync(product);
+        return await productRepository.AddAsync(product);
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        if (!await _productRepository.ExistsAsync(id))
+        if (!await productRepository.ExistsAsync(id))
         {
-            _notificationHandler.AddNotification(nameof(EMessage.NotFound), EMessage.NotFound.Description().FormatTo("Product"));
+            notificationHandler.AddNotification(nameof(EMessage.NotFound), EMessage.NotFound.Description().FormatTo("Product"));
 
             return false;
         }
 
-        return await _productRepository.DeleteAsync(id);
+        return await productRepository.DeleteAsync(id);
     }
 
     public async Task<List<ProductResponse>> GetAllAsync()
     {
-        var productList = await _productRepository.GetAllAsync();
+        var productList = await productRepository.GetAllAsync();
 
-        return _productMapper.DomainListToResponseList(productList);
+        return productMapper.DomainListToResponseList(productList);
     }
 
-    public async Task<bool> IsProductListValidAsync(List<ProductOrderSave> productOrderSaveList)
-    {
-        foreach(var productOrderSave in productOrderSaveList)
-        {
-            var product = await _productRepository.GetByIdAsync(productOrderSave.ProductId);
-
-            if (product is null)
-            {
-                _notificationHandler.AddNotification(nameof(EMessage.NotFound), EMessage.NotFound.Description().FormatTo("Product"));
-
-                return false;
-            }
-
-            if(productOrderSave.Quantity > product.Inventory.Quantity)
-            {
-                _notificationHandler.AddNotification(nameof(EMessage.Invalid), EMessage.Invalid.Description().FormatTo("Product"));
-
-                return false;
-            }
-        }
-
-        return true;
-    }
+    public Task<Product?> GetByIdRetunsDomainObjectAsync(int id) =>
+        productRepository.GetByIdAsync(id);
 
     private static bool IsValid(ProductSave productSave) =>
         !string.IsNullOrEmpty(productSave.Name)

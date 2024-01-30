@@ -1,5 +1,6 @@
 using FacadePattern.API.Constants.CorsConstants;
 using FacadePattern.API.DependencyInjection;
+using FacadePattern.API.Middlewares;
 using FacadePattern.API.Settings.MigrationSettings;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,10 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+else
+{
+    app.UseMiddleware<UnexpectedErrorMiddleware>();
 }
 
 app.UseHttpsRedirection();

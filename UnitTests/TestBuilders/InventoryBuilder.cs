@@ -4,7 +4,8 @@ using FacadePattern.API.Entities;
 namespace UnitTests.TestBuilders;
 public sealed class InventoryBuilder
 {
-    private int _quantity = 123;
+    private readonly int _id = 123;
+    private readonly int _quantity = 123;
 
     public static InventoryBuilder NewObject() =>
         new();
@@ -12,7 +13,7 @@ public sealed class InventoryBuilder
     public Inventory DomainBuild() =>
         new()
         {
-            Id = 1,
+            Id = _id,
             Quantity = _quantity,
             ProductId = 1
         };
@@ -20,7 +21,7 @@ public sealed class InventoryBuilder
     public InventoryResponse ResponseBuild() =>
         new()
         {
-            Id = 1,
+            Id = _id,
             Quantity = _quantity
         };
 }

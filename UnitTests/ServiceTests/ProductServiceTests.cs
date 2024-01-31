@@ -155,4 +155,21 @@ public sealed class ProductServiceTests
         // A
         Assert.Equal(productResponseListResult.Count, productResponseList.Count);   
     }
+
+    [Fact]
+    public async Task GetByIdRetunsDomainObjectAsync_SuccessfulScenario_ReturnsEntity()
+    {
+        // A
+        var id = 123;
+
+        var product = ProductBuilder.NewObject().DomainBuild();
+        _productRepositoryMock.Setup(p => p.GetByIdAsync(It.IsAny<int>()))
+            .ReturnsAsync(product);
+
+        // A
+        var productResult = await _productService.GetByIdRetunsDomainObjectAsync(id);
+
+        // A
+        Assert.NotNull(product);
+    }
 }

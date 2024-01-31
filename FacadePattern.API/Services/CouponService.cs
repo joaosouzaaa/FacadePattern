@@ -82,18 +82,6 @@ public sealed class CouponService(ICouponRepository couponRepository, ICouponMap
         return couponMapper.DomainListToResponseList(couponList);
     }
 
-    public async Task<bool> IsCouponValid(string name)
-    {
-        if(!await couponRepository.ExistsAsync(c => c.Name == name))
-        {
-            notificationHandler.AddNotification(nameof(EMessage.Invalid), EMessage.Invalid.Description().FormatTo("Coupon"));
-
-            return false;
-        }
-
-        return true;
-    }
-
     public async Task <bool> ProcessDiscountAsync(Order order, string name)
     {
         var coupon = await couponRepository.GetByPredicateAsync(c => c.Name == name);

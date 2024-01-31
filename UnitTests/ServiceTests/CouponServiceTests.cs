@@ -306,4 +306,51 @@ public sealed class CouponServiceTests
         // A
         Assert.Equal(couponResponseListResult.Count, couponResponseList.Count);
     }
+
+    [Fact]
+    public async Task ProcessDiscountAsync_SuccessfulScenario_ReturnsTrue()
+    {
+        // A
+        var productOrderList = new List<ProductOrder>()
+        {
+            ProductOrderBuilder.NewObject().WithTotalValue(50).DomainBuild(),
+            ProductOrderBuilder.NewObject().WithTotalValue(50).DomainBuild()
+        };
+        const decimal totalValue = 100;
+        var order = OrderBuilder.NewObject().WithTotalValue(totalValue).WithProductOrderList(productOrderList).DomainBuild();
+        var name = "test";
+
+        const decimal discountPorcentage = 10;
+        var coupon = CouponBuilder.NewObject().WithDiscountPorcentage(discountPorcentage).DomainBuild();
+        _couponRepositoryMock.Setup(c => c.GetByPredicateAsync(TestBuildUtil.BuildExpressionFunc<Coupon>()))
+            .ReturnsAsync(coupon);
+
+        // A
+        var processDiscountResult = await _couponService.ProcessDiscountAsync(order, name);
+
+        // A
+        _notificationHandlerMock.Verify(n => n.AddNotification(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
+
+        Assert.True(processDiscountResult);
+        Assert.Equal(totalValue - (totalValue * (discountPorcentage / 100)), order.TotalValue);
+    }
+
+    [Fact]
+    public async Task ProcessDiscountAsync_CouponDoesNotExist_ReturnsFalse()
+    {
+        // A
+        var order = OrderBuilder.NewObject().DomainBuild();
+        var name = "test";
+
+        _couponRepositoryMock.Setup(c => c.GetByPredicateAsync(TestBuildUtil.BuildExpressionFunc<Coupon>()))
+            .Returns(Task.FromResult<Coupon?>(null));
+
+        // A
+        var processDiscountResult = await _couponService.ProcessDiscountAsync(order, name);
+
+        // A
+        _notificationHandlerMock.Verify(n => n.AddNotification(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
+
+        Assert.False(processDiscountResult);
+    }
 }

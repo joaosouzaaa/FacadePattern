@@ -4,5 +4,5 @@ namespace FacadePattern.API.Interfaces.Services;
 
 public interface IEcommerceFacade
 {
-    Task<bool> PlaceOrderAsync(OrderSave orderSave);
+    Task PlaceOrderAsync(OrderSave orderSave);
 }

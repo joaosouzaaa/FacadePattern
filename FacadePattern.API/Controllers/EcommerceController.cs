@@ -12,6 +12,6 @@ public sealed class EcommerceController(IEcommerceFacade ecommerceFacade) : Cont
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(List<Notification>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public Task<bool> PlaceOrderAsync([FromBody] OrderSave orderSave) =>
+    public Task PlaceOrderAsync([FromBody] OrderSave orderSave) =>
         ecommerceFacade.PlaceOrderAsync(orderSave);
 }

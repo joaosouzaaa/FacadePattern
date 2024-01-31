@@ -11,13 +11,13 @@ public sealed class EcommerceFacade(ICouponService couponService, IProductOrderS
                                     IOrderService orderService, IInventoryService inventoryService,
                                     INotificationHandler notificationHandler) : IEcommerceFacade
 {
-    public async Task<bool> PlaceOrderAsync(OrderSave orderSave)
+    public async Task PlaceOrderAsync(OrderSave orderSave)
     {
         if (!IsOrderValid(orderSave))
         {
             notificationHandler.AddNotification(nameof(EMessage.Invalid), EMessage.Invalid.Description().FormatTo("Order"));
 
-            return false;
+            return;
         }
 
         var order = new Order()
@@ -27,23 +27,19 @@ public sealed class EcommerceFacade(ICouponService couponService, IProductOrderS
         };
 
         if (!await productOrderService.ProcessProductOrderListAsync(orderSave.ProductsOrder, order.ProductsOrder))
-            return false;
+            return;
 
         order.TotalValue = order.ProductsOrder.Select(p => p.TotalValue).Sum();
 
         if (orderSave.CouponName is not null && !await couponService.ProcessDiscountAsync(order, orderSave.CouponName))
-            return false;
+            return;
 
         await orderService.AddAsync(order);
 
         await inventoryService.DecreaseInventoryQuantityByOrderAsync(order);
-
-        // call supplier
-
-        return true;
     }
 
     private static bool IsOrderValid(OrderSave orderSave) =>
-        !orderSave.ProductsOrder.Any() 
-        && orderSave.ProductsOrder.Select(p => p.ProductId).Distinct().Count() != orderSave.ProductsOrder.Count;
+        orderSave.ProductsOrder.Any() 
+        && orderSave.ProductsOrder.Select(p => p.ProductId).Distinct().Count() == orderSave.ProductsOrder.Count;
 }

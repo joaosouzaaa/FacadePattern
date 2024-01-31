@@ -112,13 +112,16 @@ namespace FacadePattern.API.Migrations
 
             modelBuilder.Entity("FacadePattern.API.Entities.ProductOrder", b =>
                 {
-                    b.Property<int>("ProductId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -129,9 +132,11 @@ namespace FacadePattern.API.Migrations
                         .HasColumnType("decimal(18, 2)")
                         .HasColumnName("total_value");
 
-                    b.HasKey("ProductId");
+                    b.HasKey("Id");
 
                     b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("ProductOrders", (string)null);
                 });

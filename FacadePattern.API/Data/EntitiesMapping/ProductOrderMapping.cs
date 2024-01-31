@@ -10,7 +10,7 @@ public sealed class ProductOrderMapping : IEntityTypeConfiguration<ProductOrder>
     {
         builder.ToTable("ProductOrders");
 
-        builder.HasKey(p => p.ProductId);
+        builder.HasKey(p => p.Id);
 
         builder.Property(p => p.Quantity)
             .IsRequired(true)

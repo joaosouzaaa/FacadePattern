@@ -18,24 +18,11 @@ namespace FacadePattern.API.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     name = table.Column<string>(type: "varchar(100)", nullable: false),
-                    descount_porcentage = table.Column<decimal>(type: "decimal(5,2)", nullable: false)
+                    discount_porcentage = table.Column<decimal>(type: "decimal(5,2)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Coupons", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Inventories",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    quantity = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Inventories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -44,6 +31,7 @@ namespace FacadePattern.API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    total_value = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     creation_date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -58,16 +46,29 @@ namespace FacadePattern.API.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     name = table.Column<string>(type: "varchar(100)", nullable: false),
-                    price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    InventoryId = table.Column<int>(type: "int", nullable: false)
+                    price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Inventories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    quantity = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Inventories", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Product_Inventory",
-                        column: x => x.InventoryId,
-                        principalTable: "Inventories",
+                        name: "FK_Inventory_Product",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -76,15 +77,16 @@ namespace FacadePattern.API.Migrations
                 name: "ProductOrders",
                 columns: table => new
                 {
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     quantity = table.Column<int>(type: "integer", nullable: false),
                     total_value = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
                     OrderId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductOrders", x => x.ProductId);
+                    table.PrimaryKey("PK_ProductOrders", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Order_ProductOrder",
                         column: x => x.OrderId,
@@ -100,15 +102,20 @@ namespace FacadePattern.API.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Inventories_ProductId",
+                table: "Inventories",
+                column: "ProductId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductOrders_OrderId",
                 table: "ProductOrders",
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_InventoryId",
-                table: "Products",
-                column: "InventoryId",
-                unique: true);
+                name: "IX_ProductOrders_ProductId",
+                table: "ProductOrders",
+                column: "ProductId");
         }
 
         /// <inheritdoc />
@@ -118,6 +125,9 @@ namespace FacadePattern.API.Migrations
                 name: "Coupons");
 
             migrationBuilder.DropTable(
+                name: "Inventories");
+
+            migrationBuilder.DropTable(
                 name: "ProductOrders");
 
             migrationBuilder.DropTable(
@@ -125,9 +135,6 @@ namespace FacadePattern.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "Products");
-
-            migrationBuilder.DropTable(
-                name: "Inventories");
         }
     }
 }

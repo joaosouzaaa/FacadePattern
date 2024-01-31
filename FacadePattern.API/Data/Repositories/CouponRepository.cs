@@ -21,7 +21,7 @@ public sealed class CouponRepository(FacadePatternDbContext dbContext) : BaseRep
     
     public Task<bool> UpdateAsync(Coupon coupon)
     {
-        _dbContext.Entry(coupon).State = EntityState.Modified;
+        dbContext.Entry(coupon).State = EntityState.Modified;
 
         return SaveChangesAsync();
     }

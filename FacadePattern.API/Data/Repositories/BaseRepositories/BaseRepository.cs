@@ -3,18 +3,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FacadePattern.API.Data.Repositories.BaseRepositories;
 
-public abstract class BaseRepository<TEntity>(FacadePatternDbContext dbContext) : IDisposable
+public abstract class BaseRepository<TEntity> : IDisposable
     where TEntity : class
 {
-    protected DbSet<TEntity> DbContextSet => dbContext.Set<TEntity>();
+    protected readonly FacadePatternDbContext _dbContext;
+    protected DbSet<TEntity> DbContextSet => _dbContext.Set<TEntity>();
+
+    public BaseRepository(FacadePatternDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
 
     public void Dispose()
     {
-        dbContext.Dispose();
+        _dbContext.Dispose();
 
         GC.SuppressFinalize(this);
     }
 
     protected async Task<bool> SaveChangesAsync() =>
-        await dbContext.SaveChangesAsync() > 0;    
+        await _dbContext.SaveChangesAsync() > 0;    
 }

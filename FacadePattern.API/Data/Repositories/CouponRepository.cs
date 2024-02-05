@@ -7,8 +7,13 @@ using System.Linq.Expressions;
 
 namespace FacadePattern.API.Data.Repositories;
 
-public sealed class CouponRepository(FacadePatternDbContext dbContext) : BaseRepository<Coupon>(dbContext), ICouponRepository
+public sealed class CouponRepository : BaseRepository<Coupon>, ICouponRepository
 {
+    public CouponRepository(FacadePatternDbContext dbContext) : base(dbContext)
+    {
+        
+    }
+
     public async Task<bool> AddAsync(Coupon coupon)
     {
         await DbContextSet.AddAsync(coupon);
@@ -21,7 +26,7 @@ public sealed class CouponRepository(FacadePatternDbContext dbContext) : BaseRep
     
     public Task<bool> UpdateAsync(Coupon coupon)
     {
-        dbContext.Entry(coupon).State = EntityState.Modified;
+        _dbContext.Entry(coupon).State = EntityState.Modified;
 
         return SaveChangesAsync();
     }
